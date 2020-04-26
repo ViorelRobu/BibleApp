@@ -4,23 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cuvantul lui Dumnezeu pentru mine</title>
+    <title>BibleApp</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
         <div id="controls">
-            <select name="book" id="book"></select>
-            <select name="chapter" id="chapter"></select>
-            <button id="load">Incarca</button>
-            <select name="version" id="version">
-                <option value="ro_cornilescu">Versiunea Dumitru Cornilescu</option>
-                <option value="en_bbe">Versiunea Engleza BBE</option>
-                <option value="en_kjv">Versiunea Engleza KJV</option>
-            </select>
-        </div>
-        <div id="title">
-            <h1>Biblia &mdash; Cuvantul lui Dumnezeu pentru mine</h1>
+            <div class="left">
+                <select name="book" id="book"></select>
+                <select name="chapter" id="chapter"></select>
+                <button id="load">Incarca</button>
+            </div>
+            <div class="right">
+                <select name="version" id="version">
+                    <option value="ro_cornilescu">VDC - Dumitru Cornilescu</option>
+                    <option value="en_bbe">Enghlish BBE</option>
+                    <option value="en_kjv">English KJV</option>
+                </select>
+            </div>
         </div>
         <div id="paragraph">
             <div class="verse">
@@ -32,7 +33,6 @@
             <div class="verse">
                 dar din pomul cunoştinţei binelui şi răului să nu mănînci, căci în ziua în care vei mînca din el, vei muri negreşit.``
             </div>
-            <div id="refference">Geneza 2:15-17</div>
         </div>
     </div>
     <script src="js/axios.min.js"></script>

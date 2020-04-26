@@ -46,6 +46,7 @@ class Bible {
 
     async getBookNames() {
         const stream = await this.load();
+        book.innerHTML = '';
         for (let i = 0; i < stream.data.length; i++) {
             const opt = document.createElement('option');
             opt.value = i;
@@ -72,6 +73,7 @@ class Bible {
     changeVersion(version) {
         this.bible = version;
         this.displayChapter();
+        this.getBookNames();
     }
 }
 
