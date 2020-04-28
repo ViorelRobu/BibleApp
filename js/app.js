@@ -6,25 +6,29 @@ const version = controls.querySelector('#version');
 const chapter = document.querySelector('#paragraph');
 
 class Bible {
-    constructor(bible = 'ro_cornilescu', book = 0, chapter = 0, window = window, load = load, book = book, version = version) {
+    constructor(bible = 'ro_cornilescu', bookNum = 0, chapterNum = 0, win = window, loadApp = load, bookApp = book, versionApp = version) {
         this.bible = bible;
-        this.book = book;
-        this.chapter = chapter;
+        this.bookNum = bookNum;
+        this.chapterNum = chapterNum;
+        this.win = win;
+        this.loadApp = loadApp;
+        this.bookApp = bookApp;
+        this.versionApp = versionApp;
 
-        window.addEventListener('load', () => {
+        this.win.addEventListener('load', () => {
             this.displayChapter();
             this.getChapterList(0);
         });
 
-        load.addEventListener('click', () => {
-            this.change(book.value, bookChapter.value);
+        this.loadApp.addEventListener('click', () => {
+            this.change(this.bookApp.value, bookChapter.value);
         });
 
-        book.addEventListener('change', () => {
-            this.getChapterList(book.value);
+        this.bookApp.addEventListener('change', () => {
+            this.getChapterList(this.bookApp.value);
         });
 
-        version.addEventListener('change', () => {
+        this.versionApp.addEventListener('change', () => {
             this.changeVersion(version.value);
         })
     }
@@ -36,11 +40,11 @@ class Bible {
     async displayChapter() {
         try {
             const stream = await this.load();
-            this.getBookNames(stream.data);
+            this.getBookNames();
             chapter.innerHTML = '';
             let verseNum;
             let i = 1;
-            for (let verseData of stream.data[this.book].chapters[this.chapter]) {
+            for (let verseData of stream.data[this.bookNum].chapters[this.chapterNum]) {
                 const verse = document.createElement('div');
                 verse.classList.add('verse');
                 verseNum = String(i);
@@ -54,20 +58,20 @@ class Bible {
         
     }
 
-    change(book, chapter) {
-        this.book = book;
-        this.chapter = chapter;
+    change(bookNum, chapterNum) {
+        this.bookNum = bookNum;
+        this.chapterNum = chapterNum;
         this.displayChapter();
     }
 
     async getBookNames() {
         const stream = await this.load();
-        book.innerHTML = '';
+        this.bookApp.innerHTML = '';
         for (let i = 0; i < stream.data.length; i++) {
             const opt = document.createElement('option');
             opt.value = i;
             opt.text = stream.data[i].name;
-            book.append(opt);
+            this.bookApp.append(opt);
         }
     }
 
