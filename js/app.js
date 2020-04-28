@@ -3,14 +3,30 @@ const book = controls.querySelector('#book');
 const bookChapter = controls.querySelector('#chapter');
 const load = controls.querySelector('#load');
 const version = controls.querySelector('#version');
-
 const chapter = document.querySelector('#paragraph');
 
 class Bible {
-    constructor(bible, book = 0, chapter = 0) {
+    constructor(bible = 'ro_cornilescu', book = 0, chapter = 0, window = window, load = load, book = book, version = version) {
         this.bible = bible;
         this.book = book;
         this.chapter = chapter;
+
+        window.addEventListener('load', () => {
+            this.displayChapter();
+            this.getChapterList(0);
+        });
+
+        load.addEventListener('click', () => {
+            this.change(book.value, bookChapter.value);
+        });
+
+        book.addEventListener('change', () => {
+            this.getChapterList(book.value);
+        });
+
+        version.addEventListener('change', () => {
+            this.changeVersion(version.value);
+        })
     }
 
     load() {
@@ -77,23 +93,8 @@ class Bible {
     }
 }
 
-const bible = new Bible('ro_cornilescu');
+const bible = new Bible();
 
-window.addEventListener('load', () => {
-    bible.displayChapter();
-    bible.getChapterList(0);
-})
 
-load.addEventListener('click', () => {
-    bible.change(book.value, bookChapter.value);
-});
-
-book.addEventListener('change', () => {
-    bible.getChapterList(book.value);
-});
-
-version.addEventListener('change', () => {
-    bible.changeVersion(version.value);
-})
 
 
