@@ -76,3 +76,13 @@ select {
     border-radius: 3px;
     padding: 3px
 }
+
+#footer {
+    text-align: center;
+}
+
+.nav {
+    text-decoration: none;
+    text-align: center;
+    margin: 0 120px;
+}

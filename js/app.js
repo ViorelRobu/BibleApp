@@ -6,41 +6,39 @@ const version = controls.querySelector('#version');
 const chapter = document.querySelector('#paragraph');
 
 class Bible {
-    constructor(bible = 'ro_cornilescu', bookNum = 0, chapterNum = 0, win = window, loadApp = load, bookApp = book, versionApp = version) {
+    constructor(bible = 'ro_cornilescu', bookNum = 0, chapterNum = 0) {
         this.bible = bible;
         this.bookNum = bookNum;
         this.chapterNum = chapterNum;
-        this.win = win;
-        this.loadApp = loadApp;
-        this.bookApp = bookApp;
-        this.versionApp = versionApp;
-
-        this.win.addEventListener('load', () => {
+        this.getBookNames();
+        this.cache();
+        
+        window.addEventListener('load', () => {
             this.displayChapter();
             this.getChapterList(0);
         });
-
-        this.loadApp.addEventListener('click', () => {
-            this.change(this.bookApp.value, bookChapter.value);
+        load.addEventListener('click', () => {
+            this.change(book.value, bookChapter.value);
         });
-
-        this.bookApp.addEventListener('change', () => {
-            this.getChapterList(this.bookApp.value);
+        book.addEventListener('change', () => {
+            this.getChapterList(book.value);
         });
-
-        this.versionApp.addEventListener('change', () => {
+        version.addEventListener('change', () => {
             this.changeVersion(version.value);
-        })
+        });
     }
 
     load() {
         return axios.get(`/bible/json/${this.bible}.json`);
     }
 
+    async cache() {
+        this.stream = await this.load();
+    }
+
     async displayChapter() {
         try {
             const stream = await this.load();
-            this.getBookNames();
             chapter.innerHTML = '';
             let verseNum;
             let i = 1;
@@ -58,20 +56,21 @@ class Bible {
         
     }
 
-    change(bookNum, chapterNum) {
-        this.bookNum = bookNum;
-        this.chapterNum = chapterNum;
+    change(book, chapter) {
+        this.bookNum = book;
+        this.chapterNum = chapter;
         this.displayChapter();
     }
 
     async getBookNames() {
         const stream = await this.load();
-        this.bookApp.innerHTML = '';
+        book.innerHTML = '';
         for (let i = 0; i < stream.data.length; i++) {
             const opt = document.createElement('option');
             opt.value = i;
             opt.text = stream.data[i].name;
-            this.bookApp.append(opt);
+            if(parseInt(this.bookNum) === i) opt.setAttribute('selected', true);
+            book.append(opt);
         }
     }
 
@@ -94,6 +93,10 @@ class Bible {
         this.bible = version;
         this.displayChapter();
         this.getBookNames();
+    }
+
+    move(direction) {
+
     }
 }
 
