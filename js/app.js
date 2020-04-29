@@ -4,19 +4,16 @@ const bookChapter = controls.querySelector('#chapter');
 const load = controls.querySelector('#load');
 const version = controls.querySelector('#version');
 const chapter = document.querySelector('#paragraph');
+const forward = document.querySelector('#forward');
+const back = document.querySelector('#back');
 
 class Bible {
     constructor(bible = 'ro_cornilescu', bookNum = 0, chapterNum = 0) {
         this.bible = bible;
         this.bookNum = bookNum;
         this.chapterNum = chapterNum;
-        this.getBookNames();
-        this.cache();
+        this.load();
         
-        window.addEventListener('load', () => {
-            this.displayChapter();
-            this.getChapterList(0);
-        });
         load.addEventListener('click', () => {
             this.change(book.value, bookChapter.value);
         });
@@ -28,30 +25,32 @@ class Bible {
         });
     }
 
-    load() {
+    request() {
         return axios.get(`/bible/json/${this.bible}.json`);
     }
 
-    async cache() {
-        this.stream = await this.load();
+    async load() {
+        try {
+            this.stream = await this.request();
+            this.displayChapter();
+            this.getBookNames();
+            this.getChapterList(this.bookNum);
+        } catch (error) {
+            console.log('Error: ', error);
+        }
     }
 
-    async displayChapter() {
-        try {
-            const stream = await this.load();
-            chapter.innerHTML = '';
-            let verseNum;
-            let i = 1;
-            for (let verseData of stream.data[this.bookNum].chapters[this.chapterNum]) {
-                const verse = document.createElement('div');
-                verse.classList.add('verse');
-                verseNum = String(i);
-                verse.innerHTML = `${verseNum}. ${verseData}`;
-                chapter.append(verse);
-                i++;
-            }
-        } catch (e) {
-            console.log('Error: ', e);
+    displayChapter() {
+        chapter.innerHTML = '';
+        let verseNum;
+        let i = 1;
+        for (let verseData of this.stream.data[this.bookNum].chapters[this.chapterNum]) {
+            const verse = document.createElement('div');
+            verse.classList.add('verse');
+            verseNum = String(i);
+            verse.innerHTML = `${verseNum}. ${verseData}`;
+            chapter.append(verse);
+            i++;
         }
         
     }
@@ -62,41 +61,31 @@ class Bible {
         this.displayChapter();
     }
 
-    async getBookNames() {
-        const stream = await this.load();
+    getBookNames() {
         book.innerHTML = '';
-        for (let i = 0; i < stream.data.length; i++) {
+        for (let i = 0; i < this.stream.data.length; i++) {
             const opt = document.createElement('option');
             opt.value = i;
-            opt.text = stream.data[i].name;
-            if(parseInt(this.bookNum) === i) opt.setAttribute('selected', true);
+            opt.text = this.stream.data[i].name;
+            if (parseInt(this.bookNum) === i) opt.setAttribute('selected', true);
             book.append(opt);
         }
     }
 
-    async getChapterList(book) {
-        try {
-            const stream = await this.load();
-            bookChapter.innerHTML = '';
-            for (let i = 0; i < stream.data[book].chapters.length; i++) {
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.text = i + 1;
-                bookChapter.append(opt);
-            }
-        } catch (e) {
-            console.log('Error: ', e);
+    getChapterList(book) {
+        bookChapter.innerHTML = '';
+        for (let i = 0; i < this.stream.data[book].chapters.length; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.text = i + 1;
+            if (parseInt(this.chapterNum) === i) opt.setAttribute('selected', true);
+            bookChapter.append(opt);
         }
     }
 
     changeVersion(version) {
         this.bible = version;
-        this.displayChapter();
-        this.getBookNames();
-    }
-
-    move(direction) {
-
+        this.load();
     }
 }
 
