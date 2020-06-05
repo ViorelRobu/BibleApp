@@ -26,7 +26,7 @@ class Bible {
     }
 
     request() {
-        return axios.get(`/bible/json/${this.bible}.json`);
+        return axios.get(`./json/${this.bible}.json`);
     }
 
     async load() {
